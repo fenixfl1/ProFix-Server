@@ -2,6 +2,7 @@
 node_modules/
 dist/
 build/
+public/
 
 # TypeScript
 *.tsbuildinfo
@@ -34,3 +35,4 @@ ormconfig.env
 *.bak
 *.tmp
 *.old
+.vercel
