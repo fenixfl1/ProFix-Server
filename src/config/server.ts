@@ -12,7 +12,7 @@ const corsOptions = {
   credentials: false,
 }
 
-const initExpressServer = (): void => {
+const createExpressApp = (): express.Express => {
   const app = express()
 
   app.use(cors(corsOptions))
@@ -20,15 +20,11 @@ const initExpressServer = (): void => {
   app.use(bodyParser.json({ limit: '50mb' }))
   app.use(express.urlencoded({ extended: true }))
   app.use(routes)
-
   app.use(errorHandler)
 
-  app.listen(process.env.APP_PORT)
+  console.log(SUCCESS_CONSOLE_FONT_COLOR, ` 🚀 Express app configurada`)
 
-  console.log(
-    SUCCESS_CONSOLE_FONT_COLOR,
-    ` 🚀 Server running on port: ${process.env.APP_PORT}`
-  )
+  return app
 }
 
-export default initExpressServer
+export default createExpressApp

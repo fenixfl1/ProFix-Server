@@ -30,7 +30,7 @@ interface ErrorInfo {
 }
 
 export class BaseError extends Error {
-  status: number
+  declare status: number
   stack?: string
   error: string
 
@@ -105,7 +105,6 @@ export function InternalServerException(
 
 export class NotFoundException extends BaseError {
   message: string
-  status: number
 
   constructor(message: string, status: number = HTTP_STATUS_NOT_FOUND) {
     super(status, message, DATA_NOT_FOUND_ERROR)

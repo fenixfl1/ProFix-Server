@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "CommonJS",
+    "target": "es2022",
+    "module": "commonjs",
     "outDir": "public",
     "rootDir": "src",
     "strict": false,
@@ -19,6 +19,7 @@
     },
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/types/vercel-node.d.ts"
   ]
 }
