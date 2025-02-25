@@ -19,9 +19,9 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: false,
   logging: false,
-  entities: ['src/entities/**/*.ts'],
-  migrations: ['src/config/database/migrations/**/*.ts'],
-  subscribers: ['src/config/database/subscribers/**/*.ts'],
+  entities: ['./src/entities/**/*.ts'],
+  migrations: ['./src/config/database/migrations/**/*.ts'],
+  subscribers: ['./src/config/database/subscribers/**/*.ts'],
 })
 
 export const connectDatabase = async () => {
