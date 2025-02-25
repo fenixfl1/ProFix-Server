@@ -13,12 +13,14 @@ if (process.env.ORACLE_INSTANT_CLIENT_ROUTE) {
   initOracleClient({ libDir: process.env.ORACLE_INSTANT_CLIENT_ROUTE })
 }
 
-// Realiza la conexión a la base de datos.
+// Realiza la conexión a la base de datos y crea la aplicación Express en una función asíncrona autoejecutable.
 // Nota: Este ejemplo asume que la conexión se puede reutilizar en llamadas subsiguientes.
-await connectDatabase()
+let app: ReturnType<typeof createExpressApp>
 
-// Crea la aplicación Express
-const app = createExpressApp()
+;(async () => {
+  await connectDatabase()
+  app = createExpressApp()
+})()
 
 // Exporta la función handler para Vercel
 export default async function handler(req: any, res: any) {
