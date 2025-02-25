@@ -2,7 +2,7 @@ import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { MenuOption } from './MenuOption'
 import { BaseEntity } from './BaseEntity'
 
-@Entity('PARAMETERS')
+@Entity('parameters')
 export class Parameters extends BaseEntity {
   @PrimaryGeneratedColumn()
   parameter_id: number

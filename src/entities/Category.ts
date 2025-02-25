@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 import { BaseEntity } from './BaseEntity'
 import { ProductHeader } from './ProductHeader'
 
-@Entity('CATEGORY')
+@Entity('category')
 export class Category extends BaseEntity {
   @PrimaryGeneratedColumn()
   category_id: number

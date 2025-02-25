@@ -9,7 +9,7 @@ import { BaseEntity } from './BaseEntity'
 import { ProductDetail } from './ProductDetail'
 import { Category } from './Category'
 
-@Entity('PRODUCT_HEADER')
+@Entity('product_header')
 export class ProductHeader extends BaseEntity {
   @PrimaryGeneratedColumn()
   product_id: number

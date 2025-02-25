@@ -9,7 +9,7 @@ import { MenuOption } from './MenuOption'
 import { Role } from './Role'
 import { BaseEntity } from './BaseEntity'
 
-@Entity('MENU_OPTIONS_X_ROLES')
+@Entity('menu_options_x_roles')
 @Unique(['menu_option_id', 'role_id'])
 export class MenuOptionRoles extends BaseEntity {
   @PrimaryGeneratedColumn()

@@ -12,7 +12,7 @@ import { User } from './User'
 import { Customer } from './Customer'
 import { RepairProduct } from './RepairProduct'
 
-@Entity()
+@Entity('repair')
 export class Repair extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number

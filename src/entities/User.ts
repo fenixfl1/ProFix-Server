@@ -11,7 +11,7 @@ import {
 } from 'typeorm'
 import { Role } from './Role'
 
-@Entity('USER')
+@Entity('user')
 export class User {
   @PrimaryGeneratedColumn()
   user_id: number

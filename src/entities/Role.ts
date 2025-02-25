@@ -10,7 +10,7 @@ import { MenuOption } from './MenuOption'
 import { UserRoles } from './UserXRoles'
 import { User } from './User'
 
-@Entity('ROLES')
+@Entity('roles')
 export class Role extends BaseEntity {
   @PrimaryGeneratedColumn()
   role_id: number

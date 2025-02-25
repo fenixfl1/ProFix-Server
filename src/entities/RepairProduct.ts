@@ -3,7 +3,7 @@ import { BaseEntity } from './BaseEntity'
 import { ProductDetail } from './ProductDetail'
 import { Repair } from './Repair'
 
-@Entity()
+@Entity('repair_product')
 export class RepairProduct extends BaseEntity {
   @PrimaryGeneratedColumn()
   repair_product_id: number

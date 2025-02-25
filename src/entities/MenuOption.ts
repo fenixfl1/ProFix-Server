@@ -13,7 +13,7 @@ import { BaseEntity } from './BaseEntity'
 import { Role } from './Role'
 import { Parameters } from './Parameters'
 
-@Entity('MENU_OPTION')
+@Entity('menu_option')
 export class MenuOption extends BaseEntity {
   @PrimaryColumn({ type: 'varchar', length: 50 })
   menu_option_id: string

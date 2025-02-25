@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 import { BaseEntity } from './BaseEntity'
 import { Repair } from './Repair'
 
-@Entity('CUSTOMER')
+@Entity('customer')
 export class Customer extends BaseEntity {
   @PrimaryGeneratedColumn()
   customer_id: number
