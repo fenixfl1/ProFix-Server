@@ -11,12 +11,7 @@
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
     "moduleResolution": "node",
-    "baseUrl": "./",
-    "paths": {
-      "@src/*": [
-        "*"
-      ]
-    },
+    "baseUrl": "./src",
   },
   "include": [
     "src/**/*.ts",

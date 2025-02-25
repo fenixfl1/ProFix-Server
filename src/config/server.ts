@@ -22,7 +22,10 @@ const createExpressApp = (): express.Express => {
   app.use(routes)
   app.use(errorHandler)
 
-  console.log(SUCCESS_CONSOLE_FONT_COLOR, ` 🚀 Express app configurada`)
+  console.log(
+    SUCCESS_CONSOLE_FONT_COLOR,
+    ` 🚀 Express app configurada: http://localhost:${process.env.APP_PORT}`
+  )
 
   return app
 }

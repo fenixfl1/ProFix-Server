@@ -11,7 +11,10 @@ const initServer = async (): Promise<void> => {
   }
 
   await connectDatabase()
-  initExpressServer()
+
+  const app = initExpressServer()
+
+  app.listen(process.env.APP_PORT)
 }
 
 initServer()
