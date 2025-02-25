@@ -1,7 +1,7 @@
 import Joi, { ValidationError } from 'joi'
 import { NextFunction, Request, Response } from 'express'
-import { PayloadValidationError } from '@src/helpers/error-api'
-import { ParamsLocation } from '@src/types/api.types'
+import { PayloadValidationError } from '../../helpers/error-api'
+import { ParamsLocation } from '../../types/api.types'
 
 const validateSchema = (
   schema: Joi.ObjectSchema,

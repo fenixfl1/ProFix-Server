@@ -1,28 +1,24 @@
-import { Role } from '@src/entities/Role'
-import { User } from '@src/entities/User'
-import { AppDataSource } from '@src/config/database/ormconfig'
-import {
-  BadRequestException,
-  ConflictException,
-  NotFoundException,
-  throwError,
-  UnAuthorizedException,
-} from '@src/helpers/error-api'
 import { FindOptionsWhere, In } from 'typeorm'
 import * as bcrypt from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
+import { AppDataSource } from '../../config/database/ormconfig'
+import { HTTP_STATUS_NO_CONTENT } from '../../constants/status-codes'
+import { Role } from '../../entities/Role'
+import { User } from '../../entities/User'
+import { UserRoles } from '../../entities/UserXRoles'
+import { buildWhereClause } from '../../helpers/build-where-clause'
 import {
-  AdvancedCondition,
+  ConflictException,
+  NotFoundException,
+  UnAuthorizedException,
+  BadRequestException,
+} from '../../helpers/error-api'
+import { paginatedQuery } from '../../helpers/paginated-query'
+import {
   ApiResponse,
+  AdvancedCondition,
   QueryParams,
-} from '@src/types/api.types'
-import { UserRoles } from '@src/entities/UserXRoles'
-import { objectsKeyToUpperCase } from '@src/helpers/objects-key-to-upper'
-import { whereClauseBuilder } from '@src/helpers/where-clause-builder'
-import { paginatedQuery } from '@src/helpers/paginated-query'
-import { HTTP_STATUS_NO_CONTENT } from '@src/constants/status-codes'
-import { buildWhereClause } from '@src/helpers/build-where-clause'
-import { queryRunner } from '@src/helpers/query-utils'
+} from '../../types/api.types'
 
 export interface CreateUserPayload {
   address: string

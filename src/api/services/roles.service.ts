@@ -1,18 +1,18 @@
-import { AppDataSource } from '@src/config/database/ormconfig'
-import { MenuOptionRoles } from '@src/entities/MenuOptionXRoles'
-import { Role } from '@src/entities/Role'
-import { User } from '@src/entities/User'
-import { ConflictException } from '@src/helpers/error-api'
+import { AppDataSource } from '../../config/database/ormconfig'
+import { MenuOptionRoles } from '../../entities/MenuOptionXRoles'
+import { Role } from '../../entities/Role'
+import { User } from '../../entities/User'
+import { ConflictException } from '../../helpers/error-api'
 import {
   AdvancedCondition,
   ApiResponse,
   QueryParams,
-} from '@src/types/api.types'
+} from '../../types/api.types'
 import { NotFoundException } from '../../helpers/error-api'
 import { MenuOption } from '../../entities/MenuOption'
-import { buildWhereClause } from '@src/helpers/build-where-clause'
-import { paginatedQuery } from '@src/helpers/paginated-query'
-import { HTTP_STATUS_NO_CONTENT } from '@src/constants/status-codes'
+import { buildWhereClause } from '../../helpers/build-where-clause'
+import { paginatedQuery } from '../../helpers/paginated-query'
+import { HTTP_STATUS_NO_CONTENT } from '../../constants/status-codes'
 
 export interface CreateRolePayload {
   name: string

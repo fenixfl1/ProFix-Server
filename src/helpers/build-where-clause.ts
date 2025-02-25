@@ -1,4 +1,4 @@
-import { AdvancedCondition } from '@src/types/api.types'
+import { AdvancedCondition } from '../types/api.types'
 
 interface WhereClauseResult {
   whereClause: string

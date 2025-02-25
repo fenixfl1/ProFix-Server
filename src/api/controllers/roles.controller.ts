@@ -1,12 +1,12 @@
-import { AdvancedCondition, CustomRequest } from '@src/types/api.types'
+import { AdvancedCondition, CustomRequest } from '../../types/api.types'
 import {
   AssignPermissionPayload,
   CreateRolePayload,
   RoleServices,
 } from '../services/roles.service'
 import { NextFunction, Response } from 'express'
-import { sendResponse } from '@src/helpers/response'
-import { HTTP_STATUS_CREATED } from '@src/constants/status-codes'
+import { sendResponse } from '../../helpers/response'
+import { HTTP_STATUS_CREATED } from '../../constants/status-codes'
 
 const roleService = new RoleServices()
 

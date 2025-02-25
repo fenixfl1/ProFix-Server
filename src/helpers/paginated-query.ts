@@ -1,9 +1,9 @@
-import { PaginationLinks, QueryParams, Metadata } from '@src/types/api.types'
+import { PaginationLinks, QueryParams, Metadata } from '../types/api.types'
 import { queryRunner } from './query-utils'
 import {
   DEFAULT_PAGINATION_PAGE_NUMBER,
   DEFAULT_PAGINATION_PAGE_SIZE,
-} from '@src/constants/general'
+} from '../constants/general'
 import { SelectQueryBuilder } from 'typeorm'
 
 const getNextPageUrl = (queryParams: QueryParams): string => {

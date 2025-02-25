@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
-import { HTTP_STATUS_UNAUTHORIZED } from '@src/constants/status-codes'
+import { HTTP_STATUS_UNAUTHORIZED } from '../../constants/status-codes'
 
 const authMiddleware = (req: Request, res: any, next: NextFunction) => {
   const token = req.headers.authorization

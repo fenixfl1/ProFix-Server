@@ -1,4 +1,4 @@
-import { Metadata } from '@src/types/api.types'
+import { Metadata } from '../types/api.types'
 
 export const SUCCESS_CONSOLE_FONT_COLOR = '\x1b[34m'
 export const FAIL_CONSOLE_FONT_COLOR = '\x1b[31m'

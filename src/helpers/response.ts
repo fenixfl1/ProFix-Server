@@ -1,6 +1,6 @@
 import { Response } from 'express'
 import { HTTP_STATUS_OK } from '../constants/status-codes'
-import { ApiResponse } from '@src/types/api.types'
+import { ApiResponse } from '../types/api.types'
 
 export function sendResponse<T>(
   resp: Response,

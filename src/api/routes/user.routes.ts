@@ -4,21 +4,21 @@ import login, {
   getUserList,
   registerUser,
   updateUser,
-} from '@src/api/controllers/user.controller'
+} from '../../api/controllers/user.controller'
 import {
   createUserSchema,
   loginSchema,
   updateUserSchema,
-} from '@src/validations/user.schemas'
+} from '../../validations/user.schemas'
 import {
   PATH_GET_USER_BY_USERNAME,
   PATH_LOGIN,
   PATH_REGISTER_USER,
   PATH_GET_USER_LIST,
   PATH_UPDATE_USER,
-} from '@src/constants/routes'
+} from '../../constants/routes'
 import validateSchema from '../middlewares/validation.middleware'
-import { queryParamsSchema } from '@src/validations/query-schemas'
+import { queryParamsSchema } from '../../validations/query-schemas'
 
 export const publicUserRouter = Router()
 

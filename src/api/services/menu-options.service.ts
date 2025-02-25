@@ -1,8 +1,8 @@
-import { AppDataSource } from '@src/config/database/ormconfig'
-import { HTTP_STATUS_NO_CONTENT } from '@src/constants/status-codes'
-import { MenuOption } from '@src/entities/MenuOption'
-import { User } from '@src/entities/User'
-import { ApiResponse } from '@src/types/api.types'
+import { AppDataSource } from '../../config/database/ormconfig'
+import { HTTP_STATUS_NO_CONTENT } from '../../constants/status-codes'
+import { MenuOption } from '../../entities/MenuOption'
+import { User } from '../../entities/User'
+import { ApiResponse } from '../../types/api.types'
 import { DeepPartial } from 'typeorm'
 
 export interface CreateMenuOptionPayload {

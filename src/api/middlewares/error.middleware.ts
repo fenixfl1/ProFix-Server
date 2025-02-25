@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express'
-import { HTTP_STATUS_BAD_REQUEST } from '@src/constants/status-codes'
-import { BaseError } from '@src/helpers/error-api'
+import { HTTP_STATUS_BAD_REQUEST } from '../../constants/status-codes'
+import { BaseError } from '../../helpers/error-api'
 
 function errorHandler(
   error: BaseError,

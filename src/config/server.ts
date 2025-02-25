@@ -2,9 +2,9 @@ import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
-import { SUCCESS_CONSOLE_FONT_COLOR } from '@src/constants/general'
-import routes from '@src/api/routes'
-import errorHandler from '@src/api/middlewares/error.middleware'
+import routes from '../api/routes'
+import errorHandler from '../api/middlewares/error.middleware'
+import { SUCCESS_CONSOLE_FONT_COLOR } from '../constants/general'
 
 const corsOptions = {
   origin: '*',

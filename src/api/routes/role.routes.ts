@@ -9,13 +9,13 @@ import {
 import {
   assignPermissionsSchema,
   createRoleSchema,
-} from '@src/validations/role.schema'
+} from '../../validations/role.schema'
 import {
   PATH_ASSIGN_PERMISSION,
   PATH_CREATE_ROLE,
   PATH_GET_ALL_ROLES,
   PATH_GET_ROLES_LIST,
-} from '@src/constants/routes'
+} from '../../constants/routes'
 
 const roleRouter = Router()
 

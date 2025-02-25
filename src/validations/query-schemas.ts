@@ -1,7 +1,7 @@
 import {
   DEFAULT_PAGINATION_PAGE_SIZE,
   DEFAULT_PAGINATION_PAGE_NUMBER,
-} from '@src/constants/general'
+} from '../constants/general'
 import Joi from 'joi'
 
 export const queryParamsSchema = Joi.object().keys({

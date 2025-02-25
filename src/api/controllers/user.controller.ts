@@ -1,16 +1,16 @@
-import { INVALID_CREDENTIALS_ERROR } from '@src/constants/error-types'
-import { INVALID_LOGIN_CREDENTIAL_ERROR_MESSAGE } from '@src/constants/messages'
-import { throwError } from '@src/helpers/error-api'
-import { sendResponse } from '@src/helpers/response'
-import { AdvancedCondition, CustomRequest } from '@src/types/api.types'
-import { LoginPayload } from '@src/types/session.types'
+import { INVALID_CREDENTIALS_ERROR } from '../../constants/error-types'
+import { INVALID_LOGIN_CREDENTIAL_ERROR_MESSAGE } from '../../constants/messages'
+import { throwError } from '../../helpers/error-api'
+import { sendResponse } from '../../helpers/response'
+import { AdvancedCondition, CustomRequest } from '../../types/api.types'
+import { LoginPayload } from '../../types/session.types'
 import { NextFunction, Response } from 'express'
 import {
   CreateUserPayload,
   UpdateUserPayload,
   UserService,
 } from '../services/user.service'
-import { HTTP_STATUS_CREATED } from '@src/constants/status-codes'
+import { HTTP_STATUS_CREATED } from '../../constants/status-codes'
 
 const userService = new UserService()
 

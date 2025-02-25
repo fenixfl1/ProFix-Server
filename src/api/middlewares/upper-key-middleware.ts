@@ -1,4 +1,4 @@
-import { objectsKeyToUpperCase } from '@src/helpers/objects-key-to-upper'
+import { objectsKeyToUpperCase } from '../../helpers/objects-key-to-upper'
 import { NextFunction, Request, Response } from 'express'
 
 export const upperCaseKeysMiddleware = (

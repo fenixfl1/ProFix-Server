@@ -8,20 +8,20 @@ import {
   QUERY_VALIDATION_ERROR,
   UNAUTHORIZED_ERROR,
   UNEXPECTED_ERROR,
-} from '@src/constants/error-types'
+} from '../constants/error-types'
 import {
   DB_INSERT_ERROR_MESSAGE,
   INTERNAL_SERVER_ERROR_MESSAGE,
   NOT_DATA_FOUND_ERROR_MESSAGE,
   UNAUTHORIZED_ERROR_MESSAGE,
-} from '@src/constants/messages'
+} from '../constants/messages'
 import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_CONFLICT,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_NOT_FOUND,
   HTTP_STATUS_UNAUTHORIZED,
-} from '@src/constants/status-codes'
+} from '../constants/status-codes'
 
 interface ErrorInfo {
   status: number
