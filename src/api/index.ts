@@ -1,8 +1,6 @@
-// src/api/index.ts
 import { config } from 'dotenv'
-import { initOracleClient } from 'oracledb'
-import createExpressApp from '../config/server'
 import { connectDatabase } from '../config/database/ormconfig'
+import createExpressApp from 'src/config/server'
 // import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 // Cargar variables de entorno

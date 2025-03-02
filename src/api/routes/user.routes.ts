@@ -1,11 +1,13 @@
 import { RequestHandler, Router } from 'express'
 import login, {
+  changePassword,
   getUserByUsername,
   getUserList,
   registerUser,
   updateUser,
 } from '../../api/controllers/user.controller'
 import {
+  changePasswordSchema,
   createUserSchema,
   loginSchema,
   updateUserSchema,
@@ -16,6 +18,7 @@ import {
   PATH_REGISTER_USER,
   PATH_GET_USER_LIST,
   PATH_UPDATE_USER,
+  PATH_CHANGE_PASSWORD,
 } from '../../constants/routes'
 import validateSchema from '../middlewares/validation.middleware'
 import { queryParamsSchema } from '../../validations/query-schemas'
@@ -38,5 +41,10 @@ userRouter.post(
   registerUser
 )
 userRouter.put(PATH_UPDATE_USER, validateSchema(updateUserSchema), updateUser)
+userRouter.put(
+  PATH_CHANGE_PASSWORD,
+  validateSchema(changePasswordSchema),
+  changePassword
+)
 
 export default userRouter

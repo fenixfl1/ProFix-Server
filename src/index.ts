@@ -6,10 +6,6 @@ import { connectDatabase } from './config/database/ormconfig'
 const initServer = async (): Promise<void> => {
   config()
 
-  if (process.env.ORACLE_INSTANT_CLIENT_ROUTE) {
-    initOracleClient({ libDir: process.env.ORACLE_INSTANT_CLIENT_ROUTE })
-  }
-
   await connectDatabase()
 
   const app = initExpressServer()

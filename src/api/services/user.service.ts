@@ -32,6 +32,12 @@ export interface CreateUserPayload {
   phone: string
   role_id: number
   username: string
+  created_by: number
+}
+
+export interface ChangePasswordPayload {
+  old_password: string
+  new_password: string
 }
 
 export interface UpdateUserPayload
@@ -69,6 +75,7 @@ export class UserService {
    */
   async register({
     role_id,
+    created_by,
     ...userData
   }: CreateUserPayload): Promise<ApiResponse<User>> {
     if (await this.isFieldUsed('email', userData.email)) {
@@ -83,16 +90,24 @@ export class UserService {
       )
     }
 
+    const createdBy = await this.userRepository.findOneBy({
+      user_id: created_by,
+    })
+    if (!createdBy) {
+      throw new NotFoundException(
+        `Usuario con id '${created_by}' no encontrado.`
+      )
+    }
+
     const hashedPassword = await bcrypt.hash(userData.password, 10)
 
-    this.userRepository.insert({
+    const user = this.userRepository.create({
       ...userData,
       password: hashedPassword,
+      created_by: createdBy,
     })
 
-    const user = await this.userRepository.findOneBy({
-      username: userData.username,
-    })
+    await this.userRepository.save(user)
 
     if (role_id) {
       const role = await this.rolesRepository.findOneBy({ role_id })
@@ -105,7 +120,7 @@ export class UserService {
         await this.userRolesRepository.insert({
           user,
           role,
-          created_by: user.created_by,
+          created_by: createdBy,
           created_at: new Date(),
         })
       } catch (error) {
@@ -129,50 +144,83 @@ export class UserService {
     role_id,
     ...updateData
   }: UpdateUserPayload): Promise<ApiResponse<User>> {
-    const user = await this.userRepository.findOneBy({
-      user_id,
+    try {
+      const user = await this.userRepository.findOneBy({
+        user_id,
+      })
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado.')
+      }
+
+      if (updateData.email && updateData.email !== user.email) {
+        const userWithEmail = await this.userRepository.findOneBy({
+          email: updateData.email,
+        })
+        if (userWithEmail) {
+          throw new ConflictException('El email ya esta en uso')
+        }
+      }
+
+      if (updateData.password) {
+        updateData.password = await bcrypt.hash(updateData.password, 10)
+      }
+
+      if (role_id) {
+        const role = await this.rolesRepository.findOneBy({ role_id })
+
+        if (!role?.role_id) {
+          throw new ConflictException(`Rol con id '${role_id}' no encontrado.`)
+        }
+
+        try {
+          await this.userRolesRepository.insert({
+            user,
+            role,
+            created_by: user.created_by,
+            created_at: new Date(),
+          })
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log({ error })
+        }
+      }
+
+      const updatedUser = this.userRepository.merge(user, updateData)
+      const data = await this.userRepository.save(updatedUser)
+
+      return { data }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log({ error })
+    }
+  }
+
+  /**
+   * change user password
+   * @param username - the name of the user
+   * @param payload - old password and new password
+   * @return { message: 'Password changed successfully.' }
+   */
+  async changePassword(
+    username: string,
+    payload: ChangePasswordPayload
+  ): Promise<ApiResponse> {
+    const user = await this.userRepository.findOne({
+      where: { username },
     })
+
     if (!user) {
       throw new NotFoundException('Usuario no encontrado.')
     }
 
-    if (updateData.email && updateData.email !== user.email) {
-      const userWithEmail = await this.userRepository.findOneBy({
-        email: updateData.email,
-      })
-      if (userWithEmail) {
-        throw new ConflictException('El email ya esta en uso')
-      }
+    if (!(await bcrypt.compare(payload.old_password, user.password))) {
+      throw new UnAuthorizedException('La contraseña actual no es correcta.')
     }
 
-    if (updateData.password) {
-      updateData.password = await bcrypt.hash(updateData.password, 10)
-    }
+    user.password = await bcrypt.hash(payload.new_password, 10)
+    await this.userRepository.save(user)
 
-    if (role_id) {
-      const role = await this.rolesRepository.findOneBy({ role_id })
-
-      if (!role?.role_id) {
-        throw new ConflictException(`Rol con id '${role_id}' no encontrado.`)
-      }
-
-      try {
-        await this.userRolesRepository.insert({
-          user,
-          role,
-          created_by: user.created_by,
-          created_at: new Date(),
-        })
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log({ error })
-      }
-    }
-
-    const updatedUser = this.userRepository.merge(user, updateData)
-    const data = await this.userRepository.save(updatedUser)
-
-    return { data }
+    return { message: 'Password changed successfully.' }
   }
 
   /**

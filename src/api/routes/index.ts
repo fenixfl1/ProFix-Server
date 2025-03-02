@@ -11,7 +11,7 @@ const routes = Router()
 const publicRouter = Router()
 const privateRouter = Router()
 
-// privateRouter.use(authMiddleware)
+privateRouter.use(authMiddleware)
 
 privateRoutes.forEach((route) => {
   privateRouter.use(route)

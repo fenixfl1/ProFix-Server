@@ -78,6 +78,7 @@ export class UnAuthorizedException extends BaseError {
 
   constructor(message: string) {
     super(HTTP_STATUS_UNAUTHORIZED, message, UNAUTHORIZED_ERROR)
+    this.message = message
   }
 }
 
@@ -108,6 +109,7 @@ export class NotFoundException extends BaseError {
 
   constructor(message: string, status: number = HTTP_STATUS_NOT_FOUND) {
     super(status, message, DATA_NOT_FOUND_ERROR)
+    this.message = message
   }
 }
 

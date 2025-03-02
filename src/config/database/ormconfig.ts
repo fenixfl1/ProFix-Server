@@ -7,13 +7,13 @@ import {
 
 dotenv.config()
 
-const port = Number(process.env.DB_PORT)
+const port = process.env.DB_PORT
 const host = process.env.DB_HOST
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
   host,
-  port,
+  port: Number(port),
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,

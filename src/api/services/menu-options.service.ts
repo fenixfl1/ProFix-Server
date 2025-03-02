@@ -82,6 +82,7 @@ export class MenuOptionService {
       .leftJoinAndSelect('menu_option.parent', 'parent')
       .where('role.role_id IN (:...roleIds)', { roleIds })
       .andWhere('menu_option.state = :active', { active: 'A' })
+      .orderBy('menu_option.order', 'ASC')
       .getMany()
 
     const menuMap = new Map<string, MenuOption>(
@@ -128,6 +129,7 @@ export class MenuOptionService {
       .createQueryBuilder('menu_option')
       .leftJoinAndSelect('menu_option.parent', 'parent')
       .where('menu_option.state = :active', { active: 'A' })
+      .orderBy('menu_option.order', 'ASC')
       .getMany()
 
     const buildMenuTree = (menuOptions: MenuOption[]): MenuTree[] => {

@@ -3,6 +3,7 @@ import {
   AssignPermissionPayload,
   CreateRolePayload,
   RoleServices,
+  UpdateRolePayload,
 } from '../services/roles.service'
 import { NextFunction, Response } from 'express'
 import { sendResponse } from '../../helpers/response'
@@ -61,6 +62,34 @@ export const assignPermissions = async (
     const result = await roleService.assign_permission(req.body)
 
     sendResponse(res, result, HTTP_STATUS_CREATED)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const updateRole = async (
+  req: CustomRequest<UpdateRolePayload>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const result = await roleService.update(req.sessionInfo, req.body)
+
+    sendResponse(res, result)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getRoleById = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const result = await roleService.getRoleById(Number(req.params.role_id))
+
+    sendResponse(res, result)
   } catch (error) {
     next(error)
   }

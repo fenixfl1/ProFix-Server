@@ -7,17 +7,24 @@ import {
   AdvancedCondition,
   ApiResponse,
   QueryParams,
+  SessionDate,
 } from '../../types/api.types'
 import { NotFoundException } from '../../helpers/error-api'
 import { MenuOption } from '../../entities/MenuOption'
 import { buildWhereClause } from '../../helpers/build-where-clause'
 import { paginatedQuery } from '../../helpers/paginated-query'
 import { HTTP_STATUS_NO_CONTENT } from '../../constants/status-codes'
+import { assert } from 'src/helpers/assert'
+import { In } from 'typeorm'
 
 export interface CreateRolePayload {
   name: string
   description: string
   created_by: number
+  menu_options: string[]
+}
+
+export interface UpdateRolePayload extends Omit<Partial<Role>, 'menu_options'> {
   menu_options: string[]
 }
 
@@ -28,6 +35,7 @@ export interface AssignPermissionPayload {
 
 export class RoleServices {
   private queryRunner = AppDataSource.createQueryRunner()
+  private manager = AppDataSource.manager
   private roleRepository = AppDataSource.getRepository(Role)
   private userRepository = AppDataSource.getRepository(User)
   private menuOptionRepository = AppDataSource.getRepository(MenuOption)
@@ -82,9 +90,9 @@ export class RoleServices {
       }
 
       menu_option_roles.push({
-        menu_option_id: option.menu_option_id,
+        menu_option: option,
         created_at: new Date(),
-        role_id: data.role_id,
+        role: data,
         created_by: payload.created_by,
       })
     }
@@ -98,6 +106,74 @@ export class RoleServices {
     }
 
     return { data }
+  }
+
+  /**
+   * Update role data
+   * @param payload - role data
+   * @return The updated role
+   */
+  async update(
+    sessionInfo: SessionDate,
+    { menu_options, ...payload }: UpdateRolePayload
+  ): Promise<ApiResponse<Role>> {
+    return await this.manager.transaction(async (entityManager) => {
+      const role = await entityManager.findOne(Role, {
+        where: { role_id: payload.role_id },
+      })
+
+      if (!role) {
+        throw new NotFoundException(
+          `Role with id: '${payload.role_id}' not found.`
+        )
+      }
+
+      await entityManager.save(Role, { ...role, ...payload })
+
+      // Obtener las opciones de menú actuales del rol
+      const currMenuOptionRole = await this.menuOptionRoleRepository.find({
+        where: { role },
+        relations: ['role', 'menu_option'],
+      })
+
+      // Convertir las opciones de menú actuales en un Set para búsqueda rápida
+      const currentOptionsSet = new Set(
+        currMenuOptionRole.map((option) => option.menu_option?.menu_option_id)
+      )
+
+      const currentUser = await this.userRepository.findOneBy({
+        user_id: sessionInfo.userId,
+      })
+
+      // Manejar eliminación o actualización de estado
+      for (const option of currMenuOptionRole) {
+        const menu_option_id = option?.menu_option?.menu_option_id
+        const currentKey = menu_options?.find((key) => key === menu_option_id)
+
+        await entityManager.update(MenuOptionRoles, option.id, {
+          updated_at: new Date(),
+          updated_by: currentUser,
+          state: currentKey ? 'A' : 'I',
+        })
+      }
+
+      // Filtrar nuevas opciones que no estén en la base de datos
+      const newOptions = menu_options
+        ?.filter((menu_option_id) => !currentOptionsSet.has(menu_option_id))
+        ?.map((menu_option_id) => ({
+          menu_option_id,
+          created_at: new Date(),
+          role_id: payload.role_id,
+          created_by: payload.created_by,
+        }))
+
+      // Insertar solo las opciones nuevas
+      if (newOptions?.length > 0) {
+        await entityManager.insert(MenuOptionRoles, newOptions)
+      }
+
+      return { message: 'Rol actualizado con éxito' }
+    })
   }
 
   /**
@@ -156,7 +232,22 @@ export class RoleServices {
       return { status: HTTP_STATUS_NO_CONTENT }
     }
 
-    return { data: roles }
+    const data: Role[] = []
+    for (const role of roles) {
+      const menuOptions = await this.menuOptionRoleRepository.find({
+        select: ['menu_option'],
+        where: { role },
+        relations: ['menu_option'],
+      })
+
+      const menu_options = menuOptions.map(
+        (option) => option.menu_option.menu_option_id
+      ) as unknown as MenuOption[]
+
+      data.push({ ...role, menu_options } as never)
+    }
+
+    return { data }
   }
 
   /**
@@ -210,5 +301,29 @@ export class RoleServices {
     await this.menuOptionRoleRepository.save(menuOptionRole)
 
     return { message: 'Permission assigned successfully' }
+  }
+
+  /**
+   * Get a single role by his id
+   * @param id - role id
+   * @return The role with menu options
+   */
+  async getRoleById(role_id: number): Promise<ApiResponse<Role>> {
+    const role = await this.roleRepository.findOneBy({ role_id })
+    if (!role) {
+      throw new NotFoundException(`Rol with id '${role_id}' not found.`)
+    }
+
+    const menuOptions = await this.menuOptionRoleRepository.find({
+      select: ['menu_option'],
+      where: { role },
+      relations: ['menu_option'],
+    })
+
+    const menu_options = menuOptions.map(
+      (option) => option.menu_option.menu_option_id
+    ) as unknown as MenuOption[]
+
+    return { data: { ...role, menu_options } as never }
   }
 }

@@ -37,6 +37,9 @@ export class MenuOption extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   icon?: string
 
+  @Column({ nullable: false })
+  order: number
+
   @ManyToOne(() => MenuOption, { nullable: true })
   @JoinColumn({ name: 'parent_id' })
   parent?: MenuOption
@@ -57,31 +60,4 @@ export class MenuOption extends BaseEntity {
 
   @OneToMany(() => Parameters, (parameter) => parameter.menuOption)
   parameters: Parameters[]
-
-  // @BeforeInsert()
-  // async generateMenuOptionId() {
-  //   if (this.parent_id) {
-  //     // Si tiene parent_id, el ID es el del parent seguido de una secuencia
-  //     const parentOption = await MenuOption.findOne({
-  //       where: { menu_option_id: this.parent_id.menu_option_id },
-  //     })
-  //     if (!parentOption) {
-  //       throw new Error('Parent option not found')
-  //     }
-
-  //     const siblingsCount = await MenuOption.count({
-  //       where: { parent_id: this.parent_id },
-  //     })
-  //     this.menu_option_id = `${parentOption.menu_option_id}-${siblingsCount + 1}`
-  //   } else {
-  //     // Si no tiene parent_id, genera un ID basado en la secuencia principal
-  //     const lastMenuOption = await MenuOption.findOne({
-  //       order: { menu_option_id: 'DESC' }, // Ordenar para obtener el último id
-  //     })
-  //     const newId = lastMenuOption
-  //       ? parseInt(lastMenuOption.menu_option_id.split('-')[0], 10) + 1
-  //       : 1
-  //     this.menu_option_id = `${newId}-1`
-  //   }
-  // }
 }

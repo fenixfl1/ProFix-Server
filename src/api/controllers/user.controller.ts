@@ -6,6 +6,7 @@ import { AdvancedCondition, CustomRequest } from '../../types/api.types'
 import { LoginPayload } from '../../types/session.types'
 import { NextFunction, Response } from 'express'
 import {
+  ChangePasswordPayload,
   CreateUserPayload,
   UpdateUserPayload,
   UserService,
@@ -35,6 +36,21 @@ export const updateUser = async (
 ): Promise<void> => {
   try {
     const result = await userService.update(req.body)
+
+    sendResponse(res, result)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const changePassword = async (
+  req: CustomRequest<ChangePasswordPayload>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { username } = req.query
+    const result = await userService.changePassword(username, req.body)
 
     sendResponse(res, result)
   } catch (error) {

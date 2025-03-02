@@ -8,7 +8,7 @@ export class RepairProduct extends BaseEntity {
   @PrimaryGeneratedColumn()
   repair_product_id: number
 
-  @ManyToOne(() => Repair, (repair) => repair.usedProducts)
+  @ManyToOne(() => Repair, (repair) => repair.used_products)
   repair: Repair
 
   @ManyToOne(() => ProductDetail)

@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm'
 import { BaseEntity } from './BaseEntity'
-import { Repair } from './Repair'
+import { Device } from './Device'
 
 @Entity('customer')
 export class Customer extends BaseEntity {
@@ -10,9 +10,6 @@ export class Customer extends BaseEntity {
   @Column()
   name: string
 
-  @Column()
-  lastName: string
-
   @Column({ unique: true })
   email: string
 
@@ -20,8 +17,17 @@ export class Customer extends BaseEntity {
   phone: string
 
   @Column({ nullable: true })
+  identity_document: string
+
+  @Column({ nullable: false, unique: true })
+  username: string
+
+  @Column({ nullable: false })
+  password: string
+
+  @Column({ nullable: true })
   address: string
 
-  @OneToMany(() => Repair, (repair) => repair.customer)
-  repairs: Repair[]
+  @OneToMany(() => Device, (repair) => repair.customer)
+  devices: Device[]
 }

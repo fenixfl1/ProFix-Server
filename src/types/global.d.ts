@@ -5,6 +5,7 @@ declare global {
     interface ProcessEnv {
       APP_ENV: string
       APP_PORT: string
+      DB_PORT: number
       ORACLE_INSTANT_CLIENT_ROUTE: string
       TYPEORM_DB_CONNECTION: string
       TYPEORM_DB_SID: string
