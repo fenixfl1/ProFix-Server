@@ -4,17 +4,21 @@ import {
   ManyToOne,
   Column,
   CreateDateColumn,
+  JoinColumn,
 } from 'typeorm'
 import { BaseEntity } from './BaseEntity'
-import { Repair } from './Repair'
+import { RepairOrder } from './RepairOrder'
 
 @Entity('repair_history')
 export class RepairHistory extends BaseEntity {
   @PrimaryGeneratedColumn()
   history_id: number
 
-  @ManyToOne(() => Repair, (repair) => repair.history, { onDelete: 'CASCADE' })
-  repair: Repair
+  @ManyToOne(() => RepairOrder, (repair) => repair.history, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'repair_order_id' })
+  repair: RepairOrder
 
   @Column({
     type: 'enum',
@@ -24,10 +28,7 @@ export class RepairHistory extends BaseEntity {
 
   @Column({
     type: 'enum',
-    enum: ['P', 'I', 'R', 'N'], // P: pending, I: in progress, R: repaired, N: not repaired
+    enum: ['P', 'I', 'R', 'N'],
   })
   new_status: string
-
-  @CreateDateColumn()
-  change_date: Date
 }

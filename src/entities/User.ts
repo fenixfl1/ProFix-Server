@@ -57,7 +57,7 @@ export class User {
 
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'created_by' })
-  created_by: User | number
+  created_by: User
 
   @UpdateDateColumn({
     type: 'timestamp',

@@ -21,7 +21,7 @@ export const usersByTypeQuerySchema = Joi.object().keys({
 })
 
 export const createUserSchema = Joi.object({
-  address: Joi.string().min(5).max(200).optional(),
+  address: Joi.string().allow('', null),
   avatar: Joi.string().optional(),
   birth_date: Joi.date().required(),
   document_type: Joi.string().required(),

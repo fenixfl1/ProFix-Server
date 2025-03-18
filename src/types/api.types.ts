@@ -29,7 +29,7 @@ export interface ApiResponse<T = unknown> {
 export type Nullable<T> = T | null
 
 export interface CustomRequest<T = unknown> extends Request {
-  sessionInfo: SessionDate
+  sessionInfo: SessionData
   body: T
   query: any
   headers: any
@@ -38,7 +38,7 @@ export interface CustomRequest<T = unknown> extends Request {
   url: any
 }
 
-export interface SessionDate {
+export interface SessionData {
   ipAddress: string
   userId: number
 }

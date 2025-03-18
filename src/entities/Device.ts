@@ -8,7 +8,8 @@ import {
 } from 'typeorm'
 import { BaseEntity } from './BaseEntity'
 import { Customer } from './Customer'
-import { Repair } from './Repair'
+import { RepairOrder } from './RepairOrder'
+import { PhoneBrand } from './PhoneBrand'
 
 @Entity('device')
 export class Device extends BaseEntity {
@@ -21,8 +22,9 @@ export class Device extends BaseEntity {
   @JoinColumn({ name: 'customer_id' })
   customer: Customer
 
-  @Column({ length: 50 })
-  brand: string
+  @ManyToOne(() => PhoneBrand, (brand) => brand.device)
+  @JoinColumn({ name: 'brand_id' })
+  brand: PhoneBrand
 
   @Column({ length: 50 })
   model: string
@@ -39,6 +41,6 @@ export class Device extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   physical_condition: string
 
-  @OneToMany(() => Repair, (repair) => repair.device)
-  repairs: Repair[]
+  @OneToMany(() => RepairOrder, (repair) => repair.device)
+  repairs: RepairOrder[]
 }

@@ -7,7 +7,7 @@ import {
   AdvancedCondition,
   ApiResponse,
   QueryParams,
-  SessionDate,
+  SessionData,
 } from '../../types/api.types'
 import { NotFoundException } from '../../helpers/error-api'
 import { MenuOption } from '../../entities/MenuOption'
@@ -93,7 +93,7 @@ export class RoleServices {
         menu_option: option,
         created_at: new Date(),
         role: data,
-        created_by: payload.created_by,
+        created_by: user,
       })
     }
 
@@ -114,7 +114,7 @@ export class RoleServices {
    * @return The updated role
    */
   async update(
-    sessionInfo: SessionDate,
+    sessionInfo: SessionData,
     { menu_options, ...payload }: UpdateRolePayload
   ): Promise<ApiResponse<Role>> {
     return await this.manager.transaction(async (entityManager) => {

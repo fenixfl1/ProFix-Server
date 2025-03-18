@@ -5,6 +5,7 @@ import {
   DEFAULT_PAGINATION_PAGE_SIZE,
 } from '../constants/general'
 import { SelectQueryBuilder } from 'typeorm'
+import { BadRequestException } from './error-api'
 
 const getNextPageUrl = (queryParams: QueryParams): string => {
   return generateUrl({ ...queryParams, page: queryParams.page + 1 })
@@ -96,7 +97,6 @@ export const paginatedQuery = async <T>(
 
     return [result, meta]
   } catch (e) {
-    console.error(e)
-    throw new Error('Error executing paginated query')
+    BadRequestException(`Error executing paginated query: ${e?.message}`)
   }
 }

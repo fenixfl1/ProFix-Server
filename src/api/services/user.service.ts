@@ -125,7 +125,7 @@ export class UserService {
         })
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.log({ error })
+        console.error({ error })
       }
     }
 
@@ -181,7 +181,7 @@ export class UserService {
           })
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.log({ error })
+          console.error({ error })
         }
       }
 
@@ -191,7 +191,7 @@ export class UserService {
       return { data }
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log({ error })
+      console.error({ error })
     }
   }
 

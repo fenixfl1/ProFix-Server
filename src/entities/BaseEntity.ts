@@ -14,12 +14,11 @@ export abstract class BaseEntity extends Base {
 
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'created_by' })
-  created_by: User | number | null
+  created_by: User
 
   @UpdateDateColumn({
     type: 'timestamp',
     nullable: true,
-    default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updated_at: Date | null

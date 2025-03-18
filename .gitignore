@@ -36,3 +36,4 @@ ormconfig.env
 *.tmp
 *.old
 .vercel
+.qodo

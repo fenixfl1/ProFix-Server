@@ -180,5 +180,6 @@ export class ConflictException extends BaseError {
 
   constructor(message: string) {
     super(HTTP_STATUS_CONFLICT, message, DB_CONFLICT_ERROR)
+    this.message = message
   }
 }

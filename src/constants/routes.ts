@@ -20,3 +20,19 @@ export const PATH_GET_ONE_ROLE = '/roles/get_one_role/:role_id'
 export const PATH_CREATE_MENU_OPTION = '/menu_options/create_menu_option'
 export const PATH_GET_MENU_OPTIONS = '/menu_options/get_menu_options/:username'
 export const PATH_GET_ALL_MENU_OPTIONS = '/menu_options/get_all_menu_options'
+
+// customers
+export const PATH_CRATE_CUSTOMER = '/customers/create_customer'
+export const PATH_UPDATE_CUSTOMER = '/customers/update_customer'
+export const PATH_GET_CUSTOMERS = '/customers/get_customers'
+export const PATH_GET_ONE_CUSTOMER = '/customers/get_customer/:customer_id'
+
+// repair orders
+export const PATH_CREATE_REPAIR_ORDER = '/repair_order/create_repair_order'
+export const PATH_UPDATE_ORDER_REPAIR = '/repair_order/update_repair_order'
+export const PATH_GET_REPAIR_ORDERS = '/repair_order/get_repair_orders'
+export const PATH_GET_PHONE_BRANDS = '/repair_order/get_phone_brands'
+export const PATH_GET_ONE_DEVICE =
+  '/repair_order/get_repair_order/:repair_order_id'
+export const PATH_GET_REPAIR_ORDER_HISTORY =
+  '/repair_order/get_repair_order_history'
