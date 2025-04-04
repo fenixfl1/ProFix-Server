@@ -33,3 +33,18 @@ export const updateRepairOrderSchema = Joi.object({
   delivery_date: Joi.string().allow(null, ''),
   used_products: Joi.array().items(Joi.object()).default([]),
 })
+
+export const changeOrderStatusSchema = Joi.object({
+  repair_order_id: Joi.number().integer().required(),
+  previous_status: Joi.string().valid('P', 'I', 'R', 'N'),
+  new_status: Joi.string().valid('P', 'I', 'R', 'N').required(),
+  comment: Joi.string().optional(),
+  used_products: Joi.array()
+    .items(
+      Joi.object({
+        product_id: Joi.number().integer().required(),
+        quantity: Joi.number().integer().min(1).required(),
+      })
+    )
+    .optional(),
+})

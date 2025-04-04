@@ -3,7 +3,6 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   Column,
-  CreateDateColumn,
   JoinColumn,
 } from 'typeorm'
 import { BaseEntity } from './BaseEntity'
@@ -31,4 +30,7 @@ export class RepairHistory extends BaseEntity {
     enum: ['P', 'I', 'R', 'N'],
   })
   new_status: string
+
+  @Column({ type: 'text' })
+  comment: string
 }

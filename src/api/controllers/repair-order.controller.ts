@@ -1,6 +1,7 @@
 import { NextFunction, Response } from 'express'
 import { AdvancedCondition, CustomRequest } from 'src/types/api.types'
 import {
+  ChangeStatePayload,
   RepairOrderPayload,
   RepairOrderService,
   UpdateOrderPayload,
@@ -80,6 +81,25 @@ export const getRepairOrderHistory = async (
 
     sendResponse(res, result)
   } catch (error) {
+    next(error)
+  }
+}
+
+export const changeOrderState = async (
+  req: CustomRequest<ChangeStatePayload>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const result = await repairOrderService.changeState(
+      req.body,
+      req.sessionInfo
+    )
+
+    sendResponse(res, result)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log({ error })
     next(error)
   }
 }

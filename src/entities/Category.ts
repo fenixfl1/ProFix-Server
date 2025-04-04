@@ -10,6 +10,9 @@ export class Category extends BaseEntity {
   @Column({ length: 100, unique: true })
   name: string
 
+  @Column({ type: 'text' })
+  description: string
+
   @OneToMany(() => ProductHeader, (product) => product.category)
   products: ProductHeader[]
 }

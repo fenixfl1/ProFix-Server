@@ -11,20 +11,11 @@ export const buildWhereClause = (
   if (!condition.length) return { whereClause: '1=1', parameters: [] } // Siempre verdadero si no hay filtros
 
   const whereConditions: string[] = []
-  const parameters: any[] = [] // Ahora es un array en lugar de un objeto
+  const parameters: any[] = []
 
   condition.forEach(({ field, value, operator }) => {
     let formattedValue = value
 
-    // Si el operador es LIKE, agregamos los % para hacer coincidencia parcial
-    if (operator.toUpperCase() === 'LIKE') {
-      formattedValue = `%${value}%`
-    }
-
-    // Agregamos el valor directamente a los parámetros
-    parameters.push(formattedValue)
-
-    // Aplicamos la normalización de caracteres acentuados
     const normalizedField = `
       UPPER(
         REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
@@ -35,7 +26,31 @@ export const buildWhereClause = (
       )
     `
 
-    whereConditions.push(`${normalizedField} ${operator} ?`)
+    switch (operator.toUpperCase()) {
+      case 'LIKE':
+        formattedValue = `%${value}%`
+        parameters.push(formattedValue)
+        whereConditions.push(`${normalizedField} LIKE ?`)
+        break
+
+      case 'IN':
+      case 'NOT IN':
+        if (!Array.isArray(value) || value.length === 0) return
+        const placeholders = value.map(() => '?').join(', ')
+        parameters.push(...value)
+        whereConditions.push(`${normalizedField} ${operator} (${placeholders})`)
+        break
+
+      case 'BETWEEN':
+        if (!Array.isArray(value) || value.length !== 2) return
+        parameters.push(value[0], value[1])
+        whereConditions.push(`${normalizedField} BETWEEN ? AND ?`)
+        break
+
+      default:
+        parameters.push(formattedValue)
+        whereConditions.push(`${normalizedField} ${operator} ?`)
+    }
   })
 
   return {

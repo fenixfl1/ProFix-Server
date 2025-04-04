@@ -4,6 +4,7 @@ import {
   Column,
   OneToMany,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm'
 import { BaseEntity } from './BaseEntity'
 import { ProductDetail } from './ProductDetail'
@@ -24,6 +25,7 @@ export class ProductHeader extends BaseEntity {
     nullable: false,
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'category_id'})
   category: Category
 
   @OneToMany(() => ProductDetail, (detail) => detail.product)

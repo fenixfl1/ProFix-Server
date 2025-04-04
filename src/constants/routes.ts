@@ -36,3 +36,14 @@ export const PATH_GET_ONE_DEVICE =
   '/repair_order/get_repair_order/:repair_order_id'
 export const PATH_GET_REPAIR_ORDER_HISTORY =
   '/repair_order/get_repair_order_history'
+export const PATH_CHANGE_ORDER_STATUS = '/repair_order/change_order_status'
+
+// products
+export const PATH_CREATE_PRODUCT_HEADER = '/products/create_product'
+export const PATH_UPDATE_PRODUCT_HEADER = '/products/update_product'
+export const PATH_CREATE_PRODUCT_DETAIL = '/products/create_product_detail'
+export const PATH_UPDATE_PRODUCT_DETAIL = '/products/update_product_detail'
+export const PATH_GET_PRODUCT_HEADERS = '/products/get_product_headers'
+export const PATH_GET_PRODUCTS = '/products/get_products'
+export const PATH_GET_CATEGORIES = '/products/get_categories'
+export const PATH_CREATE_CATEGORY = '/products/create_category'

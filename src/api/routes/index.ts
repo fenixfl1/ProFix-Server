@@ -5,6 +5,7 @@ import roleRouter from './role.routes'
 import menuOptionRouter from './menu-option.routes'
 import customerRouter from './customer.routes'
 import deviceRouters from './repair-order.routes'
+import productRouter from './product.routes'
 
 const publicRoutes = [publicUserRouter]
 const privateRoutes = [
@@ -13,6 +14,7 @@ const privateRoutes = [
   menuOptionRouter,
   customerRouter,
   deviceRouters,
+  productRouter,
 ]
 
 const routes = Router()

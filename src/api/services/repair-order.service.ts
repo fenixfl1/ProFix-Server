@@ -6,8 +6,10 @@ import {
 import { Customer } from 'src/entities/Customer'
 import { Device } from 'src/entities/Device'
 import { PhoneBrand } from 'src/entities/PhoneBrand'
+import { ProductDetail } from 'src/entities/ProductDetail'
 import { RepairHistory } from 'src/entities/RepairHistory'
 import { RepairOrder } from 'src/entities/RepairOrder'
+import { RepairProduct } from 'src/entities/RepairProduct'
 import { User } from 'src/entities/User'
 import { buildWhereClause } from 'src/helpers/build-where-clause'
 import {
@@ -22,7 +24,14 @@ import {
   QueryParams,
   SessionData,
 } from 'src/types/api.types'
-import { EntityManager, RemoveOptions, SaveOptions } from 'typeorm'
+import {
+  EntityManager,
+  In,
+  MoreThan,
+  MoreThanOrEqual,
+  RemoveOptions,
+  SaveOptions,
+} from 'typeorm'
 
 export interface RepairOrderPayload {
   customer_id: number
@@ -40,6 +49,16 @@ export interface RepairOrderPayload {
   }[]
 }
 
+export interface ChangeStatePayload {
+  repair_order_id: number
+  new_status: string
+  comment?: string
+  used_products?: {
+    product_id: number
+    quantity: number
+  }[]
+}
+
 export interface UpdateOrderPayload extends RepairOrder {
   repair_order_id: number
 }
@@ -50,6 +69,7 @@ export class RepairOrderService {
   private repairOrderRepository = AppDataSource.getRepository(RepairOrder)
   private userRepository = AppDataSource.getRepository(User)
   private repairHistoryRepository = AppDataSource.getRepository(RepairHistory)
+  private productsRepository = AppDataSource.getRepository(RepairProduct)
 
   async create(
     payload: RepairOrderPayload,
@@ -278,30 +298,17 @@ export class RepairOrderService {
         (
           SELECT
             rh.history_id,
-            rh.created_at,
             rh.previous_status,
             rh.new_status,
             rh.repair_order_id,
             rh.state,
-            ro.reported_issue,
-            ro.diagnosis,
-            ro.delivery_date,
-            d.model,
-            d.imei,
-            d.physical_condition,
-            d.color,
-            pb.name as brand,
-            c.name as customer_name,
-            c.customer_id,
-            c.phone as customer_phone,
-            c.identity_document as customer_identity,
-            c.email as customer_email
+            rh.created_by,
+            rh.created_at,
+            rh.comment,
+            uc.username
           FROM
-            repair_order ro
-            left join device d ON ro.device_id = d.device_id
-            left join phone_brands pb ON d.brand_id = pb.brand_id
-            left join customer c ON d.customer_id = c.customer_id
-            left join repair_history rh ON ro.repair_order_id = rh.repair_order_id
+            repair_history rh
+            left join user uc on rh.created_by = uc.user_id
         ) subquery
       WHERE
         ${whereClause}
@@ -320,4 +327,83 @@ export class RepairOrderService {
 
     return { data, metadata }
   }
+
+  async changeState(
+    payload: ChangeStatePayload,
+    session: SessionData
+  ): Promise<ApiResponse<string>> {
+    const { repair_order_id, used_products, new_status: status } = payload
+
+    return this.manager.transaction(async (entityManager) => {
+      const order = await entityManager.findOneBy(RepairOrder, {
+        repair_order_id,
+      })
+
+      if (!order) {
+        throw new NotFoundException(
+          `Orden de reparación con id '${repair_order_id}' no encontrada. `
+        )
+      }
+
+      const prevStatus = order.status
+
+      if (prevStatus === status) {
+        return { message: 'La orden ya está en el estado deseado.' }
+      }
+
+      const user = await entityManager.findOneBy(User, {
+        user_id: session.userId,
+      })
+
+      const updatedOrder = entityManager.merge(RepairOrder, order, {
+        status,
+        updated_by: user,
+        updated_at: new Date(),
+      })
+
+      await entityManager.save(RepairOrder, updatedOrder)
+
+      if (used_products.length) {
+        const products: Partial<RepairProduct>[] = []
+        for (const item of used_products) {
+          const product = await entityManager.findOneBy(ProductDetail, {
+            product_detail_id: item.product_id,
+            state: 'A',
+            stock: MoreThanOrEqual(item.quantity),
+          })
+
+          if (!product) {
+            throw new NotFoundException(
+              `Producto con ID ${item.product_id} no encontrado o stock insuficiente. `
+            )
+          }
+
+          products.push({
+            product,
+            repair: updatedOrder,
+            created_by: user,
+            created_at: new Date(),
+            state: 'A',
+            quantity: item.quantity,
+          })
+        }
+
+        const repairProducts = entityManager.create(RepairProduct, products)
+        await entityManager.save(RepairProduct, repairProducts)
+      }
+
+      await this.createHistory(entityManager, {
+        created_by: user,
+        created_at: new Date(),
+        previous_status: prevStatus,
+        new_status: status,
+        repair: updatedOrder,
+        comment: payload?.comment,
+      })
+
+      return { message: 'Orden de reparación actualizada con éxito.' }
+    })
+  }
+
+  async
 }
