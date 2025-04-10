@@ -6,6 +6,7 @@ import {
   PATH_GET_PHONE_BRANDS,
   PATH_GET_REPAIR_ORDER_HISTORY,
   PATH_CHANGE_ORDER_STATUS,
+  PATH_GET_ORDER_RECEIPT,
 } from '../../constants/routes'
 import {
   createRepairOrder,
@@ -14,6 +15,7 @@ import {
   getRepairOrders,
   updateRepairOrder,
   changeOrderState,
+  getOrderReceipt,
 } from '../controllers/repair-order.controller'
 import validateSchema from '../middlewares/validation.middleware'
 import {
@@ -29,6 +31,7 @@ repairOrderRouter.post(
   validateSchema(repairOrderSchema),
   createRepairOrder
 )
+repairOrderRouter.get(PATH_GET_ORDER_RECEIPT, getOrderReceipt)
 repairOrderRouter.get(PATH_GET_PHONE_BRANDS, getPhoneBrands)
 repairOrderRouter.post(PATH_GET_REPAIR_ORDERS, getRepairOrders)
 repairOrderRouter.post(

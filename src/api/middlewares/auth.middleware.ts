@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import { HTTP_STATUS_UNAUTHORIZED } from '../../constants/status-codes'
 

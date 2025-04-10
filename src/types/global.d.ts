@@ -3,25 +3,21 @@ export {}
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      APP_ENV: string
-      APP_PORT: string
-      DB_PORT: number
-      ORACLE_INSTANT_CLIENT_ROUTE: string
-      TYPEORM_DB_CONNECTION: string
-      TYPEORM_DB_SID: string
-      TYPEORM_ENTITIES: string
-      TYPEORM_ENTITIES_DIR: string
-      TYPEORM_DB_HOST: string
-      TYPEORM_MIGRATIONS: string
-      TYPEORM_MIGRATIONS_DIR: string
-      TYPEORM_DB_PASSWORD: string
-      TYPEORM_DB_PORT: string
-      TYPEORM_DB_USERNAME: string
-      INSTANT_CLIENT_LIBRARY: string
+      APP_PORT: number
       JWT_SECRET: string
-      API_VERSION: string
-      EXPIRATION_TIME: string
-      EXPIRATION_MAGNITUDE: string
+      DB_HOST: string
+      DB_PORT: string
+      DB_USER: string
+      DB_PASS: string
+      DB_NAME: string
+      SMTP_HOST: string
+      NODEMAILER_PORT: number
+      NODEMAILER_USER: string
+      NODEMAILER_PASS: string
+      CLIENT_ID: string
+      CLIENT_SECRET: string
+      REDIRECT_URI: string
+      REFRESH_TOKEN: string
     }
   }
   namespace Express {

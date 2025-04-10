@@ -27,6 +27,13 @@ export const PATH_UPDATE_CUSTOMER = '/customers/update_customer'
 export const PATH_GET_CUSTOMERS = '/customers/get_customers'
 export const PATH_GET_ONE_CUSTOMER = '/customers/get_customer/:customer_id'
 
+// customer tracking
+export const PATH_LOGIN_CUSTOMER = '/customers/login_customer'
+export const PATH_GET_CUSTOMER_TRACKING_ORDER =
+  '/get_customer_tracking_order/:customer_id'
+export const PATH_GET_CUSTOMER_TRACKING_ORDER_HISTORY =
+  '/tracking/get_customer_tracking_order_history/:customer_id'
+
 // repair orders
 export const PATH_CREATE_REPAIR_ORDER = '/repair_order/create_repair_order'
 export const PATH_UPDATE_ORDER_REPAIR = '/repair_order/update_repair_order'
@@ -37,6 +44,8 @@ export const PATH_GET_ONE_DEVICE =
 export const PATH_GET_REPAIR_ORDER_HISTORY =
   '/repair_order/get_repair_order_history'
 export const PATH_CHANGE_ORDER_STATUS = '/repair_order/change_order_status'
+export const PATH_GET_ORDER_RECEIPT =
+  '/repair_order/get_receipt/:repair_order_id'
 
 // products
 export const PATH_CREATE_PRODUCT_HEADER = '/products/create_product'

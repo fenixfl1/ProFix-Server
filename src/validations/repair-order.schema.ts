@@ -46,5 +46,6 @@ export const changeOrderStatusSchema = Joi.object({
         quantity: Joi.number().integer().min(1).required(),
       })
     )
+    .default([])
     .optional(),
 })

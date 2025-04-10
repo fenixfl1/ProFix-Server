@@ -98,8 +98,25 @@ export const changeOrderState = async (
 
     sendResponse(res, result)
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log({ error })
+    next(error)
+  }
+}
+
+export const getOrderReceipt = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { repair_order_id } = req.query
+
+    const result = await repairOrderService.getReceipt(
+      repair_order_id,
+      req.sessionInfo
+    )
+
+    sendResponse(res, result)
+  } catch (error) {
     next(error)
   }
 }

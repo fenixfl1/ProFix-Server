@@ -6,8 +6,12 @@ import menuOptionRouter from './menu-option.routes'
 import customerRouter from './customer.routes'
 import deviceRouters from './repair-order.routes'
 import productRouter from './product.routes'
+import emailRouter from './email.routes'
+import customerPublicRouter from './customer.public.routes'
+import customerTrackingRouter from './customer.tracking.routes'
+import authCustomerMiddleware from '../middlewares/auth-customers.middleware'
 
-const publicRoutes = [publicUserRouter]
+const publicRoutes = [publicUserRouter, emailRouter, customerPublicRouter]
 const privateRoutes = [
   userRouter,
   roleRouter,
@@ -22,6 +26,8 @@ const publicRouter = Router()
 const privateRouter = Router()
 
 privateRouter.use(authMiddleware)
+
+routes.use('/tracking', authCustomerMiddleware, customerTrackingRouter)
 
 privateRoutes.forEach((route) => {
   privateRouter.use(route)

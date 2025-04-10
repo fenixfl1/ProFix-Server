@@ -28,7 +28,7 @@ export const connectDatabase = async () => {
   try {
     await AppDataSource.initialize()
 
-    console.log(
+    console.info(
       SUCCESS_CONSOLE_FONT_COLOR,
       ` ✨ database connection established successfully at: http://${host}:${port}. `
     )

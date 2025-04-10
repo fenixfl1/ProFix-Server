@@ -7,6 +7,7 @@ import { Customer } from 'src/entities/Customer'
 import { Device } from 'src/entities/Device'
 import { PhoneBrand } from 'src/entities/PhoneBrand'
 import { ProductDetail } from 'src/entities/ProductDetail'
+import Receipt from 'src/entities/Receipt'
 import { RepairHistory } from 'src/entities/RepairHistory'
 import { RepairOrder } from 'src/entities/RepairOrder'
 import { RepairProduct } from 'src/entities/RepairProduct'
@@ -17,6 +18,7 @@ import {
   NotFoundException,
   UnAuthorizedException,
 } from 'src/helpers/error-api'
+import { generateReceiptHtmlContent } from 'src/helpers/genrate-receipt-html-content'
 import { paginatedQuery } from 'src/helpers/paginated-query'
 import {
   AdvancedCondition,
@@ -24,14 +26,7 @@ import {
   QueryParams,
   SessionData,
 } from 'src/types/api.types'
-import {
-  EntityManager,
-  In,
-  MoreThan,
-  MoreThanOrEqual,
-  RemoveOptions,
-  SaveOptions,
-} from 'typeorm'
+import { EntityManager, MoreThanOrEqual } from 'typeorm'
 
 export interface RepairOrderPayload {
   customer_id: number
@@ -69,12 +64,12 @@ export class RepairOrderService {
   private repairOrderRepository = AppDataSource.getRepository(RepairOrder)
   private userRepository = AppDataSource.getRepository(User)
   private repairHistoryRepository = AppDataSource.getRepository(RepairHistory)
-  private productsRepository = AppDataSource.getRepository(RepairProduct)
+  private receiptRepository = AppDataSource.getRepository(Receipt)
 
   async create(
     payload: RepairOrderPayload,
     session: SessionData
-  ): Promise<ApiResponse<Device>> {
+  ): Promise<ApiResponse<any>> {
     return this.manager.transaction(async (entityManager) => {
       const user = await entityManager.findOneBy(User, {
         user_id: session.userId,
@@ -84,10 +79,13 @@ export class RepairOrderService {
       }
 
       const { customer_id, devices } = payload
+
       const customer = await entityManager.findOneBy(Customer, { customer_id })
       if (!customer) {
         throw new NotFoundException('Customer not found')
       }
+
+      const receipts: Receipt[] = []
 
       for (const order of devices) {
         const existingDevice = await entityManager.findOneBy(Device, {
@@ -138,9 +136,26 @@ export class RepairOrderService {
           repair,
           state: 'A',
         })
+
+        const receipt = entityManager.create(Receipt, {
+          content: generateReceiptHtmlContent(repair),
+          created_at: new Date(),
+          created_by: user.username,
+          repair_order: repair,
+          status: 'P',
+        })
+        await entityManager.save(receipt)
+
+        receipts.push(receipt)
       }
 
-      return { message: 'Device(s) created successfully' }
+      return {
+        message: 'Device(s) created successfully',
+        data: receipts.map((item) => ({
+          content: item.content,
+          repair_order_id: item.repair_order.repair_order_id,
+        })),
+      }
     })
   }
 
@@ -405,5 +420,41 @@ export class RepairOrderService {
     })
   }
 
-  async
+  async getReceipt(
+    repair_order_id: number,
+    session: SessionData
+  ): Promise<ApiResponse<Receipt>> {
+    const user = await this.userRepository.findOneBy({
+      user_id: session.userId,
+    })
+
+    const [repair_order] = await this.repairOrderRepository.find({
+      where: { repair_order_id },
+      relations: ['device', 'device.brand', 'device.customer'],
+    })
+
+    if (!repair_order) {
+      throw new NotFoundException('Orden de reparación no encontrada.')
+    }
+
+    let receipt = await this.receiptRepository.findOneBy({
+      repair_order,
+    })
+
+    if (!receipt) {
+      try {
+        receipt = this.receiptRepository.create({
+          content: generateReceiptHtmlContent(repair_order),
+          created_at: new Date(),
+          repair_order: repair_order,
+          status: 'P',
+        })
+        await this.receiptRepository.save(receipt)
+      } catch (error) {
+        throw new NotFoundException('Recibo no encontrado 2')
+      }
+    }
+
+    return { data: receipt }
+  }
 }

@@ -19,6 +19,8 @@ import {
   AdvancedCondition,
   QueryParams,
 } from '../../types/api.types'
+import EmailService from './email.service'
+import { generatePassword } from 'src/helpers/generate-password'
 
 export interface CreateUserPayload {
   address: string
@@ -63,10 +65,22 @@ export interface UserSession {
   }
 }
 
+export interface CustomerSession {
+  username: string
+  customer_id: number
+  name: string
+  sessionCookie: {
+    expiration: Date
+    token: string
+  }
+}
+
 export class UserService {
   private userRepository = AppDataSource.getRepository(User)
   private rolesRepository = AppDataSource.getRepository(Role)
   private userRolesRepository = AppDataSource.getRepository(UserRoles)
+  private manager = AppDataSource.manager
+  private mailService = new EmailService()
 
   /**
    * Register a new user
@@ -99,39 +113,51 @@ export class UserService {
       )
     }
 
-    const hashedPassword = await bcrypt.hash(userData.password, 10)
+    const password = generatePassword()
+    const hashedPassword = await bcrypt.hash(password, 10)
 
-    const user = this.userRepository.create({
-      ...userData,
-      password: hashedPassword,
-      created_by: createdBy,
-    })
+    return this.manager.transaction(async (entityManager) => {
+      const user = entityManager.create(User, {
+        ...userData,
+        password: hashedPassword,
+        created_by: createdBy,
+      })
 
-    await this.userRepository.save(user)
+      await entityManager.save(user)
 
-    if (role_id) {
-      const role = await this.rolesRepository.findOneBy({ role_id })
+      if (role_id) {
+        const role = await entityManager.findOneBy(Role, { role_id })
 
-      if (!role?.role_id) {
-        throw new ConflictException(`Rol with id '${role_id}' not found.`)
-      }
+        if (!role?.role_id) {
+          throw new ConflictException(`Rol with id '${role_id}' not found.`)
+        }
 
-      try {
-        await this.userRolesRepository.insert({
+        await entityManager.insert(UserRoles, {
           user,
           role,
           created_by: createdBy,
           created_at: new Date(),
         })
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error({ error })
       }
-    }
 
-    return {
-      data: user,
-    }
+      try {
+        await this.mailService.send({
+          to: userData.email,
+          subject: 'Te damos la bienvenida',
+          templateName: 'welcome',
+          record: user,
+          text: '',
+        })
+      } catch (error) {
+        throw new BadRequestException(
+          `Error sending email. Please try again later. ${error?.message || ''}`
+        )
+      }
+
+      return {
+        data: user,
+      }
+    })
   }
 
   /**

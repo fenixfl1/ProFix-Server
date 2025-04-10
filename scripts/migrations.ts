@@ -7,9 +7,6 @@ const action =
 
 const migrationName = `Migration_${Date.now()}` // Nombre aleatorio
 
-// eslint-disable-next-line no-console
-console.log({ action, args })
-
 const commands = {
   create: `npx typeorm-ts-node-commonjs migration:create src/config/database/migrations/${migrationName}`,
   generate: `npx typeorm-ts-node-commonjs migration:generate -d src/config/database/ormconfig.ts src/config/database/migrations/${migrationName}`,
@@ -23,5 +20,5 @@ if (!commands[action]) {
   process.exit(1)
 }
 
-console.log(`🚀 Ejecutando: ${commands[action]}`)
+console.info(`🚀 Ejecutando: ${commands[action]}`)
 execSync(commands[action] as never, { stdio: 'inherit' })

@@ -3,6 +3,7 @@ import { AdvancedCondition, CustomRequest } from 'src/types/api.types'
 import { CustomerService } from '../services/customer.service'
 import { Customer } from 'src/entities/Customer'
 import { sendResponse } from 'src/helpers/response'
+import { LoginPayload } from 'src/types/session.types'
 
 const customerService = new CustomerService()
 

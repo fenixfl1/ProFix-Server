@@ -30,7 +30,7 @@ export const createUserSchema = Joi.object({
   identity_document: Joi.string().alphanum().length(11).required(),
   last_name: Joi.string().min(2).max(50).required(),
   name: Joi.string().min(2).max(50).required(),
-  password: Joi.string().required(),
+  password: Joi.string().optional(),
   phone: Joi.string().optional(),
   role_id: Joi.number().optional(),
   username: Joi.string().alphanum().min(3).max(30).required(),
