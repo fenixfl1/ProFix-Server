@@ -6,6 +6,16 @@ export const loginSchema = Joi.object().keys({
   password: requiredString,
 })
 
+export const resetPasswordSchema = Joi.object().keys({
+  password: requiredString,
+  token: requiredString,
+})
+
+export const requestPasswordResetSchema = Joi.object().keys({
+  email: requiredString,
+  username: requiredString,
+})
+
 export const supervisorLoginSchema = Joi.object().keys({
   username: requiredString,
   password: requiredString,

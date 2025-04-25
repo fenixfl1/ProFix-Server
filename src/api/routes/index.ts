@@ -10,6 +10,7 @@ import emailRouter from './email.routes'
 import customerPublicRouter from './customer.public.routes'
 import customerTrackingRouter from './customer.tracking.routes'
 import authCustomerMiddleware from '../middlewares/auth-customers.middleware'
+import dashboardRouter from './dashboard.route'
 
 const publicRoutes = [publicUserRouter, emailRouter, customerPublicRouter]
 const privateRoutes = [
@@ -19,6 +20,7 @@ const privateRoutes = [
   customerRouter,
   deviceRouters,
   productRouter,
+  dashboardRouter,
 ]
 
 const routes = Router()

@@ -3,7 +3,12 @@
     "target": "es2022",
     "module": "commonjs",
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": ".",
+    "paths": {
+      "src": [
+        "src/*"
+      ],
+    },
     "strict": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -16,5 +21,11 @@
   "include": [
     "src/**/*.ts",
     "src/types/vercel-node.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "**/*.spec.ts"
   ]
 }

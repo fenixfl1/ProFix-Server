@@ -21,7 +21,7 @@ export const registerUser = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const user = await userService.register(req.body)
+    const user = await userService.register(req.body, req.sessionInfo)
 
     sendResponse(res, user, HTTP_STATUS_CREATED)
   } catch (error) {
@@ -102,4 +102,32 @@ export const login = async (
   }
 }
 
-export default login
+export const requestResetPassword = async (
+  req: CustomRequest<any>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { email, username } = req.body
+    const result = await userService.requestPasswordReset(email, username)
+
+    sendResponse(res, result)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const resetPassword = async (
+  req: CustomRequest<any>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { token, password } = req.body
+    const result = await userService.resetPassword(token, password)
+
+    sendResponse(res, result)
+  } catch (error) {
+    next(error)
+  }
+}

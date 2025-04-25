@@ -1,0 +1,62 @@
+<html lang='es'>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Actualización de Estado</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 30px;
+        max-width: 600px;
+        margin: auto;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .status {
+        color: #333;
+        font-size: 18px;
+        margin-bottom: 20px;
+      }
+      .button {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 14px;
+        color: #666;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class='container'>
+      <h2>¡Hola, {{name}}!</h2>
+      <h3> 🛠️ Actualización de tu orden #{{repair_order_id}}</h3>
+      <p class='status'>Estado actual: <strong>{{status}}</strong></p>
+
+      <p>Gracias por confiar en
+        {{business.name}}. Puedes seguir el historial completo de tu orden desde
+        el siguiente enlace:</p>
+
+      <p>
+        <a class='button' href='http://client.profix.com/tracking'>Ver Historial
+          de Orden</a>
+      </p>
+
+      <div class='footer'>
+        Si tienes alguna pregunta, contáctanos. Estamos aquí para ayudarte.
+      </div>
+    </div>
+  </body>
+</html>

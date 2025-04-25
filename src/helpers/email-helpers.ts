@@ -6,7 +6,7 @@ export async function compileTemplate(
   templateName: string,
   variables: Record<string, any>
 ): Promise<string> {
-  const filePath = path.join(__dirname, '../templates', `${templateName}.html`)
+  const filePath = path.join(__dirname, '../templates', `${templateName}.hbs`)
   const templateSource = fs.readFileSync(filePath, 'utf-8')
   const template = handlebars.compile(templateSource)
   return template(variables)

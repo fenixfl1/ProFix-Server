@@ -1,15 +1,20 @@
 import { RequestHandler, Router } from 'express'
-import login, {
+import {
   changePassword,
   getUserByUsername,
   getUserList,
   registerUser,
+  requestResetPassword,
+  resetPassword,
   updateUser,
+  login,
 } from '../../api/controllers/user.controller'
 import {
   changePasswordSchema,
   createUserSchema,
   loginSchema,
+  requestPasswordResetSchema,
+  resetPasswordSchema,
   updateUserSchema,
 } from '../../validations/user.schemas'
 import {
@@ -19,6 +24,8 @@ import {
   PATH_GET_USER_LIST,
   PATH_UPDATE_USER,
   PATH_CHANGE_PASSWORD,
+  PATH_REQUEST_RESET_PASSWORD,
+  PATH_RESET_PASSWORD,
 } from '../../constants/routes'
 import validateSchema from '../middlewares/validation.middleware'
 import { queryParamsSchema } from '../../validations/query-schemas'
@@ -28,6 +35,16 @@ export const publicUserRouter = Router()
 const userRouter = Router()
 
 publicUserRouter.post(PATH_LOGIN, validateSchema(loginSchema), login)
+publicUserRouter.post(
+  PATH_REQUEST_RESET_PASSWORD,
+  validateSchema(requestPasswordResetSchema),
+  requestResetPassword
+)
+publicUserRouter.post(
+  PATH_RESET_PASSWORD,
+  validateSchema(resetPasswordSchema),
+  resetPassword
+)
 
 userRouter.post(
   PATH_GET_USER_LIST,

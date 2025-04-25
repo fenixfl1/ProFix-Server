@@ -1,5 +1,7 @@
 export const MAIN_PATH = '/'
 export const PATH_LOGIN = '/login'
+export const PATH_REQUEST_RESET_PASSWORD = '/request_password_reset'
+export const PATH_RESET_PASSWORD = '/reset_password'
 
 // user
 export const PATH_REGISTER_USER = '/user/register_user'
@@ -56,3 +58,13 @@ export const PATH_GET_PRODUCT_HEADERS = '/products/get_product_headers'
 export const PATH_GET_PRODUCTS = '/products/get_products'
 export const PATH_GET_CATEGORIES = '/products/get_categories'
 export const PATH_CREATE_CATEGORY = '/products/create_category'
+
+// dashboard
+export const PATH_GET_REPAIR_ORDERS_BY_STATUS = '/get_repair_orders_by_status'
+export const PATH_GET_REPAIR_ORDERS_BY_MONTH = '/get_repair_orders_by_month'
+export const PATH_GET_MONTHLY_INCOME = '/get_monthly_income'
+export const PATH_GET_MOST_COMMON_DEVICES = '/get_most_common_devices'
+export const PATH_GET_NEW_CUSTOMER_PER_MONTH = '/get_new_customer_per_month'
+export const PATH_GET_AVERAGE_REPAIR_TIME_DAYS = '/get_average_repair_time_days'
+export const PATH_GET_RECURRENT_CUSTOMERS_VS_NEW_CUSTOMERS =
+  '/get_recurrent_customers_vs_new_customers'

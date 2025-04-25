@@ -28,6 +28,8 @@ export const connectDatabase = async () => {
   try {
     await AppDataSource.initialize()
 
+    await AppDataSource.query(`SET lc_time_names = 'es_ES';`)
+
     console.info(
       SUCCESS_CONSOLE_FONT_COLOR,
       ` ✨ database connection established successfully at: http://${host}:${port}. `

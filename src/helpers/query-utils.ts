@@ -54,3 +54,13 @@ export async function queryRunner<T = unknown>(
 
   return result
 }
+
+/**
+ * MySQL DATE_FORMAT
+ * @param field - The database field to apply the transformation.
+ * @param format - The date format to use (default: '%M %Y').
+ * @return A SQL string that applies `DATE_FORMAT` to the given field.
+ */
+export const mysqlDateFormat = (field: string, format = '%M %Y'): string => {
+  return `DATE_FORMAT(${field}, '${format}')`
+}

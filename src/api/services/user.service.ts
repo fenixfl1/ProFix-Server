@@ -18,9 +18,13 @@ import {
   ApiResponse,
   AdvancedCondition,
   QueryParams,
+  SessionData,
 } from '../../types/api.types'
-import EmailService from './email.service'
-import { generatePassword } from 'src/helpers/generate-password'
+import { generatePassword } from '../../helpers/generate-password'
+import { publishEmailToQueue } from './email/email-producer.service'
+import Business from 'src/entities/Business'
+import PasswordResetToken from 'src/entities/PasswordResetToken'
+import { randomBytes } from 'crypto'
 
 export interface CreateUserPayload {
   address: string
@@ -59,6 +63,7 @@ export interface UserSession {
   name: string
   avatar: string | null
   roles: string[]
+  business: Business
   sessionCookie: {
     expiration: Date
     token: string
@@ -79,19 +84,20 @@ export class UserService {
   private userRepository = AppDataSource.getRepository(User)
   private rolesRepository = AppDataSource.getRepository(Role)
   private userRolesRepository = AppDataSource.getRepository(UserRoles)
+  private resetPasswordRepository =
+    AppDataSource.getRepository(PasswordResetToken)
   private manager = AppDataSource.manager
-  private mailService = new EmailService()
 
   /**
    * Register a new user
    * @param userData - user data, include username and password
    * @returns the created user
    */
-  async register({
-    role_id,
-    created_by,
-    ...userData
-  }: CreateUserPayload): Promise<ApiResponse<User>> {
+  async register(
+    payload: CreateUserPayload,
+    session: SessionData
+  ): Promise<ApiResponse<User>> {
+    const { created_by, role_id, ...userData } = payload
     if (await this.isFieldUsed('email', userData.email)) {
       throw new ConflictException(
         `El email: '${userData.email}' ya esta en uso.`
@@ -140,19 +146,18 @@ export class UserService {
         })
       }
 
-      try {
-        await this.mailService.send({
-          to: userData.email,
-          subject: 'Te damos la bienvenida',
-          templateName: 'welcome',
-          record: user,
-          text: '',
-        })
-      } catch (error) {
-        throw new BadRequestException(
-          `Error sending email. Please try again later. ${error?.message || ''}`
-        )
-      }
+      await publishEmailToQueue({
+        to: userData.email,
+        subject: 'Te damos la bienvenida',
+        templateName: 'welcome',
+        record: {
+          ...user,
+          password,
+          business: session.business,
+          url: process.env.ADMIN_APP_URL,
+        },
+        text: '',
+      })
 
       return {
         data: user,
@@ -328,6 +333,8 @@ export class UserService {
               U.name,
               U.last_name,
               U.username,
+              U.created_at,
+              U.updated_at,
               GROUP_CONCAT(R.name SEPARATOR ', ') AS roles
           FROM 
               USER U
@@ -369,7 +376,7 @@ export class UserService {
   ): Promise<ApiResponse<UserSession>> {
     const user = await this.userRepository.findOne({
       where: { username },
-      relations: ['roles'],
+      relations: ['roles', 'business'],
     })
     if (!user) {
       throw new UnAuthorizedException('Usuario o contraseña incorrectos')
@@ -388,9 +395,13 @@ export class UserService {
       BadRequestException('JWT_SECRET no configurado')
     }
 
-    const token = jwt.sign({ userId: user?.user_id, username }, secret, {
-      expiresIn: '24h',
-    })
+    const token = jwt.sign(
+      { userId: user?.user_id, username, business: user.business },
+      secret,
+      {
+        expiresIn: '24h',
+      }
+    )
 
     const expiration = new Date()
     expiration.setDate(expiration.getDate() + 1)
@@ -407,11 +418,91 @@ export class UserService {
         name: `${user?.name} ${user?.last_name}`,
         avatar: user?.avatar,
         roles: rolesNames,
+        business: user?.business,
         sessionCookie: {
           expiration,
           token,
         },
       },
+    }
+  }
+
+  async requestPasswordReset(
+    email: string,
+    username: string
+  ): Promise<ApiResponse> {
+    const user = await this.userRepository.findOne({
+      where: { email, username },
+      relations: ['business'],
+    })
+    if (!user) {
+      throw new NotFoundException('El correo introducido no es valido.')
+    }
+
+    const token = randomBytes(32).toString('hex')
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 1)
+
+    const resetToken = this.resetPasswordRepository.create({
+      user,
+      token,
+      expires_at: expiresAt,
+    })
+    await this.resetPasswordRepository.save(resetToken)
+
+    const url = `${process.env.ADMIN_APP_URL}/reset_password/${token}?expires=${expiresAt.getTime()}`
+
+    await publishEmailToQueue({
+      to: email,
+      subject: 'Recuperación de contraseña',
+      templateName: 'forgot-password',
+      text: '',
+      record: {
+        name: user.name,
+        business: user.business,
+        url,
+        year: new Date().getFullYear(),
+      },
+    })
+
+    return {
+      message:
+        'Hemos enviado un correo electrónico con las instrucciones para recuperar tu contraseña.',
+    }
+  }
+
+  async resetPassword(token: string, password: string): Promise<ApiResponse> {
+    const tokenRecord = await this.resetPasswordRepository.findOne({
+      where: { token },
+      relations: ['user'],
+    })
+
+    if (!tokenRecord || tokenRecord.expires_at < new Date()) {
+      throw new Error('Token inválido o expirado')
+    }
+
+    const user = tokenRecord.user
+
+    user.password = await bcrypt.hash(password, 10)
+    await this.userRepository.save(user)
+
+    await this.resetPasswordRepository.delete(tokenRecord)
+
+    await publishEmailToQueue({
+      to: user.email,
+      subject: 'Recuperación de contraseña',
+      templateName: 'password-changed',
+      text: '',
+      record: {
+        name: user.name,
+        business: user.business,
+        url: `${process.env.ADMIN_APP_URL}/login`,
+        year: new Date().getFullYear(),
+      },
+    })
+
+    return {
+      message:
+        'Su contraseña ha sido actualizada correctamente. Ya puede iniciar sesión.',
     }
   }
 

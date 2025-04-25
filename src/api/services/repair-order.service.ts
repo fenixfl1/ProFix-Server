@@ -27,6 +27,7 @@ import {
   SessionData,
 } from 'src/types/api.types'
 import { EntityManager, MoreThanOrEqual } from 'typeorm'
+import { publishEmailToQueue } from './email/email-producer.service'
 
 export interface RepairOrderPayload {
   customer_id: number
@@ -138,7 +139,7 @@ export class RepairOrderService {
         })
 
         const receipt = entityManager.create(Receipt, {
-          content: generateReceiptHtmlContent(repair),
+          content: generateReceiptHtmlContent(repair, session.business),
           created_at: new Date(),
           created_by: user.username,
           repair_order: repair,
@@ -242,6 +243,9 @@ export class RepairOrderService {
         where ${whereClause}
         order by repair_order_id asc
     `
+
+    // eslint-disable-next-line no-console
+    console.log({ statement })
 
     const [data = [], metadata] = await paginatedQuery<RepairOrder>(
       statement,
@@ -350,8 +354,9 @@ export class RepairOrderService {
     const { repair_order_id, used_products, new_status: status } = payload
 
     return this.manager.transaction(async (entityManager) => {
-      const order = await entityManager.findOneBy(RepairOrder, {
-        repair_order_id,
+      const [order] = await entityManager.find(RepairOrder, {
+        where: { repair_order_id },
+        relations: ['device', 'device.customer'],
       })
 
       if (!order) {
@@ -416,6 +421,27 @@ export class RepairOrderService {
         comment: payload?.comment,
       })
 
+      const customer = order.device.customer
+      if (customer && customer?.email) {
+        const statusMap = {
+          P: 'En proceso',
+          I: 'En reparación',
+          R: 'Reparado',
+          N: 'No reparado',
+        }
+
+        await publishEmailToQueue({
+          to: customer.email,
+          subject: 'Actualización de tu orden de reparación',
+          templateName: 'order-status-update',
+          text: `Hola ${customer.name}, tu orden ha sido actualizada.`,
+          record: {
+            status: statusMap[status],
+            repair_order_id,
+          },
+        })
+      }
+
       return { message: 'Orden de reparación actualizada con éxito.' }
     })
   }
@@ -444,7 +470,7 @@ export class RepairOrderService {
     if (!receipt) {
       try {
         receipt = this.receiptRepository.create({
-          content: generateReceiptHtmlContent(repair_order),
+          content: generateReceiptHtmlContent(repair_order, session.business),
           created_at: new Date(),
           repair_order: repair_order,
           status: 'P',

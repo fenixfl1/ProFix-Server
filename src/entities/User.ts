@@ -8,8 +8,10 @@ import {
   JoinColumn,
   ManyToOne,
   UpdateDateColumn,
+  OneToOne,
 } from 'typeorm'
 import { Role } from './Role'
+import Business from './Business'
 
 @Entity('user')
 export class User {
@@ -81,4 +83,8 @@ export class User {
     inverseJoinColumn: { name: 'role_id', referencedColumnName: 'role_id' },
   })
   roles: Role[]
+
+  @ManyToOne(() => Business, { nullable: false })
+  @JoinColumn({ name: 'business_id' })
+  business: Business
 }

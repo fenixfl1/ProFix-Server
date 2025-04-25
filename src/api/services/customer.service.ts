@@ -4,7 +4,7 @@ import { Customer } from 'src/entities/Customer'
 import { User } from 'src/entities/User'
 import { buildWhereClause } from 'src/helpers/build-where-clause'
 import { NotFoundException, UnAuthorizedException } from 'src/helpers/error-api'
-import { generatePassword } from 'src/helpers/generate-password'
+import { generatePassword } from '../../helpers/generate-password'
 import { paginatedQuery } from 'src/helpers/paginated-query'
 import {
   AdvancedCondition,
