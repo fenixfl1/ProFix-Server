@@ -61,6 +61,7 @@ export const updateUserSchema = Joi.object({
   role_id: Joi.number().optional(),
   user_id: Joi.number().required(),
   username: Joi.string().alphanum().min(3).max(30).optional(),
+  state: Joi.string().valid('A', 'I').optional(),
 })
 
 export const changePasswordSchema = Joi.object({

@@ -34,7 +34,7 @@ repairOrderRouter.post(
 repairOrderRouter.get(PATH_GET_ORDER_RECEIPT, getOrderReceipt)
 repairOrderRouter.get(PATH_GET_PHONE_BRANDS, getPhoneBrands)
 repairOrderRouter.post(PATH_GET_REPAIR_ORDERS, getRepairOrders)
-repairOrderRouter.post(
+repairOrderRouter.put(
   PATH_UPDATE_ORDER_REPAIR,
   validateSchema(updateRepairOrderSchema),
   updateRepairOrder
