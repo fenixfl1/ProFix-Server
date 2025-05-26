@@ -244,9 +244,6 @@ export class RepairOrderService {
         order by repair_order_id asc
     `
 
-    // eslint-disable-next-line no-console
-    console.log({ statement })
-
     const [data = [], metadata] = await paginatedQuery<RepairOrder>(
       statement,
       queryParams,

@@ -22,7 +22,7 @@ import {
   PATH_UPDATE_ROLE,
 } from '../../constants/routes'
 
-const roleRouter = Router()
+const roleRouter = Router() as any
 
 roleRouter.post(PATH_CREATE_ROLE, validateSchema(createRoleSchema), createRole)
 roleRouter.put(PATH_UPDATE_ROLE, validateSchema(updateRoleSchema), updateRole)

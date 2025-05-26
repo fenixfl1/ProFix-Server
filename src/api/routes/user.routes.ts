@@ -30,9 +30,9 @@ import {
 import validateSchema from '../middlewares/validation.middleware'
 import { queryParamsSchema } from '../../validations/query-schemas'
 
-export const publicUserRouter = Router()
+export const publicUserRouter = Router() as any
 
-const userRouter = Router()
+const userRouter = Router() as any
 
 publicUserRouter.post(PATH_LOGIN, validateSchema(loginSchema), login)
 publicUserRouter.post(

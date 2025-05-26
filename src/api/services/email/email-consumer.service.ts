@@ -10,7 +10,7 @@ export async function startConsumer() {
     const channel = await connection.createChannel()
 
     await channel.assertQueue(QUEUE_NAME)
-    console.log(
+    console.info(
       SUCCESS_CONSOLE_FONT_COLOR,
       ` 🟢 Escuchando mensajes en la cola: ${QUEUE_NAME}`
     )

@@ -23,9 +23,9 @@ const privateRoutes = [
   dashboardRouter,
 ]
 
-const routes = Router()
-const publicRouter = Router()
-const privateRouter = Router()
+const routes = Router() as any
+const publicRouter = Router() as any
+const privateRouter = Router() as any
 
 privateRouter.use(authMiddleware)
 

@@ -10,7 +10,7 @@ export async function publishEmailToQueue(message: EmailProps) {
   await channel.assertQueue(QUEUE_NAME)
   channel.sendToQueue(QUEUE_NAME, Buffer.from(JSON.stringify(message)))
 
-  console.log(' 📤 Mensaje enviado a la cola', message.to)
+  console.info(' 📤 Mensaje enviado a la cola', message.to)
 
   await channel.close()
   await connection.close()

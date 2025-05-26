@@ -8,7 +8,7 @@ interface WhereClauseResult {
 export const buildWhereClause = (
   condition: AdvancedCondition[]
 ): WhereClauseResult => {
-  if (!condition.length) return { whereClause: '1=1', parameters: [] } // Siempre verdadero si no hay filtros
+  if (!condition.length) return { whereClause: '1 = 1', parameters: [] } // Siempre verdadero si no hay filtros
 
   const whereConditions: string[] = []
   const parameters: any[] = []

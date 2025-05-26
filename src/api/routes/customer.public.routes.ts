@@ -5,7 +5,7 @@ import { PATH_LOGIN_CUSTOMER } from 'src/constants/routes'
 import { loginSchema } from 'src/validations/user.schemas'
 import { loginCustomer } from '../controllers/customer.tracking.controller'
 
-const customerPublicRouter = Router()
+const customerPublicRouter = Router() as any
 
 customerPublicRouter.post(
   PATH_LOGIN_CUSTOMER,

@@ -17,7 +17,7 @@ import {
   PATH_GET_ONE_CUSTOMER,
 } from 'src/constants/routes'
 
-const customerRouter = Router()
+const customerRouter = Router() as any
 
 customerRouter.post(
   PATH_CRATE_CUSTOMER,

@@ -24,7 +24,7 @@ import {
   updateRepairOrderSchema,
 } from 'src/validations/repair-order.schema'
 
-const repairOrderRouter = Router()
+const repairOrderRouter = Router() as any
 
 repairOrderRouter.post(
   PATH_CREATE_REPAIR_ORDER,

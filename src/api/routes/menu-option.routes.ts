@@ -12,7 +12,7 @@ import {
   PATH_GET_MENU_OPTIONS,
 } from '../../constants/routes'
 
-const menuOptionRouter = Router()
+const menuOptionRouter = Router() as any
 
 menuOptionRouter.post(
   PATH_CREATE_MENU_OPTION,

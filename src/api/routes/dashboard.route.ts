@@ -18,7 +18,7 @@ import {
   PATH_GET_REPAIR_ORDERS_BY_STATUS,
 } from 'src/constants/routes'
 
-const dashboardRouter = Router()
+const dashboardRouter = Router() as any
 
 dashboardRouter.get(PATH_GET_REPAIR_ORDERS_BY_STATUS, getRepairOrdersByStatus)
 dashboardRouter.get(PATH_GET_REPAIR_ORDERS_BY_MONTH, getRepairOrderByMonth)

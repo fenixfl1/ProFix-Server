@@ -157,19 +157,25 @@ export class RoleServices {
         })
       }
 
-      // Filtrar nuevas opciones que no estén en la base de datos
-      const newOptions = menu_options
-        ?.filter((menu_option_id) => !currentOptionsSet.has(menu_option_id))
-        ?.map((menu_option_id) => ({
-          menu_option_id,
-          created_at: new Date(),
-          role_id: payload.role_id,
-          created_by: payload.created_by,
-        }))
+      const newOptions = await Promise.all(
+        menu_options
+          ?.filter((menu_option_id) => !currentOptionsSet.has(menu_option_id))
+          ?.map(async (menu_option_id) => {
+            return {
+              menu_option: await entityManager.findOneBy(MenuOption, {
+                menu_option_id,
+              }),
+              created_at: new Date(),
+              role: await entityManager.findOneBy(Role, {
+                role_id: payload.role_id,
+              }),
+              created_by: sessionInfo.user,
+            }
+          })
+      )
 
-      // Insertar solo las opciones nuevas
       if (newOptions?.length > 0) {
-        await entityManager.insert(MenuOptionRoles, newOptions)
+        await entityManager.save(MenuOptionRoles, newOptions)
       }
 
       return { message: 'Rol actualizado con éxito' }

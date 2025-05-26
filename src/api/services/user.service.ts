@@ -396,7 +396,7 @@ export class UserService {
     }
 
     const token = jwt.sign(
-      { userId: user?.user_id, username, business: user.business },
+      { userId: user?.user_id, username, business: user.business, user },
       secret,
       {
         expiresIn: '24h',

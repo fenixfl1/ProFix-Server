@@ -28,7 +28,7 @@ import {
   getProducts,
 } from 'src/api/controllers/product.controller'
 
-const productRouter = Router()
+const productRouter = Router() as any
 
 productRouter.post(
   PATH_CREATE_PRODUCT_HEADER,

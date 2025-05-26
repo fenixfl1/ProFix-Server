@@ -1,5 +1,5 @@
-import { Request } from 'express'
 import Business from 'src/entities/Business'
+import { User } from 'src/entities/User'
 
 export type PaginationLinks = {
   nextPage: Nullable<string>
@@ -31,7 +31,7 @@ export type Nullable<T> = T | null
 
 export interface CustomRequest<T = unknown> extends Request {
   sessionInfo: SessionData
-  body: T
+  body: any
   query: any
   headers: any
   socket: any
@@ -43,6 +43,7 @@ export interface SessionData {
   ipAddress: string
   userId: number
   business: Business
+  user: User
 }
 
 export interface SimpleCondition<T = unknown> {
